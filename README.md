@@ -1,5 +1,54 @@
 # Apply ICA (reject Components) to Epoched Data
 
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
+
+> **Removes ICA components from epoched MEG/EEG data with MNE-Python ICA.apply, using manually listed and/or automatically detected EOG and ECG components, with an overlay figure and HTML report.**
+
+Reads epochs and a fitted ICA solution, builds the exclusion list from the components already marked in the ICA, the indices in exclude and, optionally, components detected by find_bads_eog and find_bads_ecg, then reconstructs the epochs without them. Use it after fitting ICA to clean ocular and cardiac artifacts. The optional rejects input is not read by the code.
+
+| | |
+|---|---|
+| 📥 **Inputs** | `neuro/meeg/mne/epochs` · `neuro/meeg/mne/ica` · `neuro/meg/fif-override` (optional) |
+| 📤 **Outputs** | `neuro/meeg/mne/epochs` · `generic/image/png` · `report/html` |
+| 🐳 **Container** | `brainlifemeeg/mne:1.12.1` |
+| ⚙️ **Resources** | 8 CPUs · 16 GB memory · 0.5 h walltime |
+| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.764](https://doi.org/10.25663/brainlife.app.764) |
+
+#### 📥 Inputs
+
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `epo` | `neuro/meeg/mne/epochs` | yes | Epoched MEG/EEG data (-epo.fif). |
+| `ica` | `neuro/meeg/mne/ica` | yes | Fitted ICA decomposition of the same data (e.g. from an ICA-fit App). |
+| `rejects` | `neuro/meg/fif-override` | no | We can use a single comma-separated line of component indices to exclude . Not read by the current code. |
+
+#### 📤 Outputs
+
+| Output | Datatype | Description |
+|---|---|---|
+| `out_dir` | `neuro/meeg/mne/epochs` | The corrected data. |
+| `out_figs` | `generic/image/png` | plot_overlay.png comparing the data before and after removing the components. |
+| `out_report` | `report/html` | HTML QC report with the ICA decomposition and the excluded components. |
+
+<details>
+<summary><b>⚙️ Parameters</b> (5)</summary>
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `exclude` | string |  | The indices referring to columns in the ummixing matrix. The components to be zeroed out. If None (default) or an empty list, only components from ica.exclude will be excluded. Else, the union of exclude and ica.exclude will be excluded. |
+| `reject_EOG` | boolean | `false` | Detect and reject EOG related components using correlation (using mne.preprocessing.ICA.find_bads_eog) |
+| `reject_ECG` | boolean | `false` | Detect and reject ECG related components using correlation (using mne.preprocessing.ICA.find_bads_ecg) |
+| `EOG_chan` | string |  | Comma separated EOG channel number(s) or label(s) |
+| `ECG_chan` | string |  | Comma separated ECG channel number(s) or label(s) |
+
+</details>
+
+📚 **References used by this App:**
+- Hayashi S., Caron B. A., Heinsfeld A. S. et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. Nature Methods 21, 809-813 (2024). [doi:10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
+- Gramfort A. et al. MEG and EEG data analysis with MNE-Python. Frontiers in Neuroscience 7:267 (2013). [doi:10.3389/fnins.2013.00267](https://doi.org/10.3389/fnins.2013.00267)
+
+<!-- brainlife-app:end -->
+
 [![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.764-blue.svg)](https://doi.org/10.25663/brainlife.app.764)
 
 ## Description
